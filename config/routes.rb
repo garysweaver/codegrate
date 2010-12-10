@@ -4,6 +4,8 @@ Codegrate::Application.routes.draw do
   root :to => "dashboard#index"
   
   match "data" => "dashboard#show"
+  match "authors" => "authors#index"
+  match "scores" => "scores#index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

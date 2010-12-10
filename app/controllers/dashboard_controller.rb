@@ -36,7 +36,7 @@ class DashboardController < ApplicationController
             end
           end
         
-          (author_id_to_data[author.id]) << ScatterValue.new(x,y)
+          (author_id_to_data[author[:id]]) << ScatterValue.new(x,y)
       end
     end
     

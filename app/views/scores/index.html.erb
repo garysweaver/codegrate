@@ -1,0 +1,25 @@
+<h1>Codegrate - List Scores</h1>
+
+<table class="cg-table">
+  <tr>
+    <th>Repository</th>
+    <th>Author</th>
+    <th>Date</th>
+    <th>Score</th>
+    <th>Commit</th>
+  </tr>
+
+<% @scores.each do |score| %>
+  <tr>
+    <td><%= score.repository_id %></td>
+    <% author = Author.find(score.author_id) %>
+    <td><%= author.name %> &lt;<%= author.email %>&gt;</td>
+    <td><%= score.date %></td>
+    <td><%= score.score %></td>
+    <td><%= score.commit %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+

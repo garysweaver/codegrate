@@ -33,29 +33,29 @@ class RepositoryProcessor
       Author.delete(a.object_id)
     end
     
-    Repository.all.each do |r|
-      process_repository(r)
+    Repository.all.each do |repository|
+      process_repository(repository)
     end
   end
   
-  def self.process_repository(r)
-    if r.repository_type = 'git'
-      process_git_repository(r)
+  def self.process_repository(repository)
+    if repository.repository_type = 'git'
+      process_git_repository(repository)
     else
-      puts "Unsupported repository type: #{r.repository_type}"
+      puts "Unsupported repository type: #{repository.repository_type}"
     end
   end
 
-  def self.process_git_repository(r)
+  def self.process_git_repository(repository)
     root_tmp = './repos'
     FileUtils.mkdir_p(root_tmp)
     fillin_tmp = File.join(root_tmp, 'fill-in')
-    clone_tmp = File.join(root_tmp, r.name.tableize.singularize)
-    puts "Cloning git repo '#{r.name}' with URI: #{r.uri} into #{clone_tmp}"
+    clone_tmp = File.join(root_tmp, repository.name.underscore)
+    puts "Cloning git repo '#{repository.name}' with URI: #{repository.uri} into #{clone_tmp}"
     
     begin
       fillin_tmp_g = Grit::Git.new("#{fillin_tmp}")
-      fillin_tmp_g.clone({:quiet => false, :verbose => true, :progress => true, :branch => '37s'}, "#{r.uri}", "#{clone_tmp}")
+      fillin_tmp_g.clone({:quiet => false, :verbose => true, :progress => true, :branch => '37s'}, "#{repository.uri}", "#{clone_tmp}")
       g = Grit::Repo.new("#{clone_tmp}", {:is_bare => true})
     rescue Exception => e
       puts "*************************************************************************************"
@@ -98,14 +98,16 @@ class RepositoryProcessor
       end
       
       Score.find_or_create_by_commit(c.sha) { |s|
-        s.repository_id = r.object_id
-        s.author_id = author.object_id
+        s.repository_id = repository[:id]
+        s.author_id = author[:id]
         s.score = commit_score
         s.date = c.date
       }
       
     end
     
+    puts ""
+    puts "Repositories #{Repository.find(:all).inspect}"
     puts ""
     puts "Created Authors #{Author.find(:all).inspect}"
     puts ""

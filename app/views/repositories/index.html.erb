@@ -2,6 +2,7 @@
 
 <table class="cg-table">
   <tr>
+	<th>Id</th>
     <th>Name</th>
     <th>Repository type</th>
     <th>Uri</th>
@@ -12,6 +13,7 @@
 
 <% @repositories.each do |repository| %>
   <tr>
+	<td><%= repository[:id] %></td>
     <td><%= repository.name %></td>
     <td><%= repository.repository_type %></td>
     <td><%= repository.uri %></td>
