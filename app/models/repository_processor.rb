@@ -8,8 +8,7 @@ include Grit
 class RepositoryProcessor
 
   @@processing = false
-  @@email_to_author_cache = Hash.new(0)
-
+  
   def self.process
     # not a perfect lock, but works for now
     if @@processing
@@ -78,13 +77,9 @@ class RepositoryProcessor
       puts "email = '#{c.author.email}'"
       puts "date = '#{c.date}'"
       
-      author = @@email_to_author_cache[c.author.email.to_s.to_sym]
-      if !author
-        author = Author.find_or_create_by_email(c.author.email) { |a|
-          a.name = c.author.name
-        }
-        @@email_to_author_cache[c.author.email.to_s.to_sym] = author
-      end
+      author = Author.find_or_create_by_email(c.author.email) { |a|
+        a.name = c.author.name
+      }
       
       commit_score = 0
       
@@ -110,6 +105,11 @@ class RepositoryProcessor
       }
       
     end
+    
+    puts ""
+    puts "Created Authors #{Author.find(:all).inspect}"
+    puts ""
+    puts "Created Scores #{Score.find(:all).inspect}"
     
     FileUtils.rm_rf(fillin_tmp)
     FileUtils.rm_rf(clone_tmp)
