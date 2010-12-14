@@ -5,6 +5,8 @@ class Repository < ActiveRecord::Base
   after_save :process
   
   def process
-    RepositoryProcessor.process_repository(self)
+    spawn do
+      RepositoryProcessor.process_repository(self)
+    end
   end
 end
