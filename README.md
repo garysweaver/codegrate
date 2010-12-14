@@ -18,8 +18,6 @@ The analyzation and scoring system need work, but the intent is to provide somet
 Installation
 =====
 
-Unfortunately, this is going to be sparse for now until I have more time to work on it.
-
 First install Git, Ruby, and Rails 3.
 
 Then, get the project from GitHub, and in the project directory create the database and migrate as usual (by default it uses SQLite). Be warned that in the current version it puts repositories in ./repos and blows away those clones and the analytics tables in the DB on each run. Please consider it alpha software and subject to change.
