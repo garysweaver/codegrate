@@ -21,6 +21,8 @@ class DashboardController < ApplicationController
     first_score = scores_by_date.first
     last_score = scores_by_date.last
     
+    max_y = 0
+    
     Author.find(:all).each do |author|
       puts "Handling author #{author.inspect}"
       author_id_to_data[author[:id]] = []
@@ -37,6 +39,8 @@ class DashboardController < ApplicationController
           end
         
           (author_id_to_data[author[:id]]) << ScatterValue.new(x,y)
+          
+          max_y = y if y > max_y
       end
     end
     
@@ -60,9 +64,8 @@ class DashboardController < ApplicationController
 
     x.labels = labels
 
-    max_y = Score.maximum(:score) + 1
     y = YAxis.new
-    y.set_range(0,max_y * 3,(max_y/3).to_i)
+    y.set_range(0, (max_y * 1.1).to_i, (max_y/3).to_i)
 
     chart = OpenFlashChart.new
     title = Title.new("Code Scores")

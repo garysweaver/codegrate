@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'grit'
+require 'digest/md5'
 
 include Grit
 
@@ -50,14 +51,25 @@ class RepositoryProcessor
     root_tmp = './repos'
     FileUtils.mkdir_p(root_tmp)
     fillin_tmp = File.join(root_tmp, 'fill-in')
-    clone_tmp = File.join(root_tmp, repository.name.underscore)
+    clone_tmp = File.join(root_tmp, Digest::MD5.hexdigest(repository.uri))
     puts "Cloning git repo '#{repository.name}' with URI: #{repository.uri} into #{clone_tmp}"
-    
     begin
-      fillin_tmp_g = Grit::Git.new("#{fillin_tmp}")
-      # if it takes more than a day to get the repo, something is incredibly wrong.
-      Grit::Git.git_timeout = 24.hours
-      fillin_tmp_g.clone({:quiet => false, :verbose => true, :progress => true, :branch => '24h'}, "#{repository.uri}", "#{clone_tmp}")
+      FileUtils.rm_rf "#{clone_tmp}"
+      if ENV['RCLONE']
+        fillin_tmp_g = Grit::Git.new("#{fillin_tmp}")
+        # if it takes more than a day to get the repo, something is incredibly wrong.
+        Grit::Git.git_timeout = 24.hours
+        fillin_tmp_g.clone({:quiet => false, :verbose => true, :progress => true, :branch => '24h'}, "#{repository.uri}", "#{clone_tmp}")
+      else
+        cmd = "git clone #{repository.uri} \"#{clone_tmp}\""
+        puts cmd
+        # TODO: consider other options: http://tech.natemurray.com/2007/03/ruby-shell-commands.html
+        # can use exec cmd to debug/provide output.
+        #exec cmd
+        success = system cmd
+        raise "clone failed! try exec '#{cmd}' for error info" if !success
+      end
+      
       g = Grit::Repo.new("#{clone_tmp}", {:is_bare => true})
     rescue Exception => e
       puts "*************************************************************************************"
@@ -74,7 +86,9 @@ class RepositoryProcessor
     
     puts "Analyzing Git repository..."
     days = Hash.new(0)
-    g.commits('master').each do |c|
+    #g.commits('master').each do |c|
+    Grit::Git.git_timeout = 99999.hours
+    g.log.each do |c|
       puts "author = '#{c.author.name}'"
       puts "email = '#{c.author.email}'"
       puts "date = '#{c.date}'"
