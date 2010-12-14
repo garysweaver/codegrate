@@ -91,10 +91,18 @@ class RepositoryProcessor
         if (d.diff)
           a = d.diff.scan(/\n\+/).size
           r = d.diff.scan(/\n\-/).size
-          diff_score = a + r
+          if r > a
+            bonus = (r-a)
+          else
+            bonus = 0
+          end      
+          diff_score = a + r + bonus
+          # double lines removed for those beyond the number of line additions
+          diff_score = diff_score + (r-a) if r > a
           commit_score = commit_score + diff_score
-          puts "LOC additions= #{a}"
-          puts "LOC removals= #{r}"
+          puts "LOC additions = #{a}"
+          puts "LOC removals = #{r}"
+          puts "LOC removals beyond additions = #{bonus}"
           puts "LOC score = #{diff_score}"
         end
       end
