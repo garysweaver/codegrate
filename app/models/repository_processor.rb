@@ -8,38 +8,45 @@ include Grit
 
 class RepositoryProcessor
 
-  @@processing = false
+  @@repository_uri_refresh_queue = []
   
-  def self.process
-    # not a perfect lock, but works for now
-    if @@processing
-      puts "call to process all repositories ignored. still waiting on previous job to complete"
-      return
-    end 
-    @@processing = true
-    begin
-      process_repositories
-    ensure
-      @@processing = false
+  def self.request_refresh_all
+    Repository.all.each do |repository|
+      RepositoryProcessor.request_refresh repository.uri
     end
   end
-
-  def self.process_repositories
-    puts "Processing repositories..."
+  
+  def self.request_refresh(repository_uri)
+    return unless repository_uri
+    repo_sym = repository_uri.to_sym
+    unless @@repository_uri_refresh_queue.include? repo_sym
+      @@repository_uri_refresh_queue << repo_sym if Repository.find_by_uri(repository_uri)
+    end
+  end
+  
+  def self.delete_all_score_and_author_data
     Score.all.each do |s|
-      Score.delete(s.object_id)
+      Score.delete(s[:id])
     end
     
     Author.all.each do |a|
-      Author.delete(a.object_id)
+      Author.delete(a[:id])
     end
-    
-    Repository.all.each do |repository|
+  end
+
+  def self.process_queue
+    @@repository_uri_refresh_queue.each do |repo_sym|
+      @@repository_uri_refresh_queue.delete repo_sym
+      repository_uri = repo_sym.to_s
+      repository = Repository.find_by_uri(repository_uri)
       process_repository(repository)
     end
   end
   
+protected
+
   def self.process_repository(repository)
+    return unless repository
     if repository.repository_type = 'git'
       process_git_repository(repository)
     else

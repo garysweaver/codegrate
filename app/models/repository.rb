@@ -2,11 +2,9 @@ class Repository < ActiveRecord::Base
   
   SUPPORTED_REPOSITORY_TYPES = ['git']
   
-  after_save :process
+  after_save :request_refresh
   
-  def process
-    spawn do
-      RepositoryProcessor.process_repository(self)
-    end
+  def request_refresh
+    RepositoryProcessor.request_refresh(self.uri)
   end
 end

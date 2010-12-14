@@ -73,6 +73,9 @@ class RepositoriesController < ApplicationController
   # DELETE /repositories/1.xml
   def destroy
     @repository = Repository.find(params[:id])
+    Score.find_by_repository_id(@repository[:id]).each do |score|
+      Score.delete(score)
+    end
     @repository.destroy
 
     respond_to do |format|

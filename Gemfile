@@ -21,7 +21,6 @@ gem 'git', '1.2.5'
 #gem 'whenever', '0.6.2'
 #gem 'whenever', :require => false
 gem 'rufus-scheduler', '2.0.7'
-gem 'spawn', '0.1.4'
 
 # Use unicorn as the web server
 # gem 'unicorn'
