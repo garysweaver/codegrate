@@ -7,17 +7,13 @@ Codegrate provides a web-based UI to view a dashboard (with graph courtesy of [o
 
 When a repository is added/edited or on startup, a request is added to analyze the repository.
 
-Also every 30 minutes all repositories are requested to be analyzed.
-
-Every 5 seconds those repositories in queue are analyzed in sequence.
+Using [rufus scheduler][rsc], every 5 seconds, repositories in queue are analyzed in sequence. On startup and every 30 minutes, all repositories are requested to be analyzed.
 
 Repository analyzation first involves calling git clone from shell, because it is faster than [GRIT][grit]'s clone (I even tried the exec-direct branch), but if you want to use GRIT's clone, you can set the RCLONE env variable to anything (e.g. RCLONE=1 rails server).
 
-The next step in analyzation is calling the log method on GRIT's git repo and using the following algorithm to determine a score for each commit: score = (number of LOC additions) + (number of LOC removals) + (number of LOC removals greater than number of LOC additions, if any). If the score is truncated at 150 to avoid issues with binary files causing extremely high scores.
+The next step in analyzation is calling the log method on GRIT's git repo and using the following algorithm to determine a score for each commit: score = (number of LOC additions) + (number of LOC removals) + (number of LOC removals greater than number of LOC additions, if any). The score is limited to 150 per commit to attempt to avoid issues with high scores due to addition and removal of image files, etc.
 
-This is by no means a perfect scoring system. In fact, it is quite horrid. But, I wanted something that could be applied across all kinds of code to attempt to measure productivity at some level. Basically, the theory is that if you are just adding code you are doing something (and you get a big score for reusing someone else's code), but refactoring is more complex (code changes that involve additions and subtractions), and reducing code should be rewarded (since potentially it implies less complexity and less required maintenance). There are many ways this scoring system could be easily abused.
-
-In addition to using open flash chart and GRIT, it uses the [rufus scheduler][rsc] to keep information up-to-date.
+The analyzation and scoring system need work, but the intent is to provide something that could be applied across all kinds of code to attempt to measure productivity at some base level. The theory is that if you are just adding code you are doing something (and you get a big score for reusing someone else's code), but refactoring is more complex (code changes that involve additions and subtractions), and reducing code should be rewarded (since potentially it implies less complexity and less required maintenance). There are many ways this scoring system could be easily abused.
 
 Installation
 =====
