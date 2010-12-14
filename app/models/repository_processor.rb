@@ -8,6 +8,7 @@ include Grit
 
 class RepositoryProcessor
 
+  @@processing = false
   @@repository_uri_refresh_queue = []
   
   def self.request_refresh_all
@@ -35,11 +36,18 @@ class RepositoryProcessor
   end
 
   def self.process_queue
-    @@repository_uri_refresh_queue.each do |repo_sym|
-      @@repository_uri_refresh_queue.delete repo_sym
-      repository_uri = repo_sym.to_s
-      repository = Repository.find_by_uri(repository_uri)
-      process_repository(repository)
+    # locking not perfect, but works for now.
+    return if @@processing
+    @@processing = true
+    begin
+      @@repository_uri_refresh_queue.each do |repo_sym|
+        @@repository_uri_refresh_queue.delete repo_sym
+        repository_uri = repo_sym.to_s
+        repository = Repository.find_by_uri(repository_uri)
+        process_repository(repository)
+      end
+    ensure
+      @@processing = false
     end
   end
   
