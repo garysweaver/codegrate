@@ -1,3 +1,12 @@
+GIT
+  remote: git://github.com/mojombo/grit.git
+  revision: 3f4efb266482f1e012a32a749d679432468f22a8
+  branch: exec-direct
+  specs:
+    grit (2.3.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -35,9 +44,6 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     git (1.2.5)
-    grit (2.3.0)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
     i18n (0.4.2)
     mail (2.2.9)
       activesupport (>= 2.3.6)
@@ -78,7 +84,7 @@ PLATFORMS
 
 DEPENDENCIES
   git (= 1.2.5)
-  grit (= 2.3.0)
+  grit!
   rails (= 3.0.1)
   rufus-scheduler (= 2.0.7)
   sqlite3-ruby

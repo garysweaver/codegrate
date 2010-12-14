@@ -55,11 +55,13 @@ class RepositoryProcessor
     
     begin
       fillin_tmp_g = Grit::Git.new("#{fillin_tmp}")
-      fillin_tmp_g.clone({:quiet => false, :verbose => true, :progress => true, :branch => '37s'}, "#{repository.uri}", "#{clone_tmp}")
+      # if it takes more than a day to get the repo, something is incredibly wrong.
+      Grit::Git.git_timeout = 24.hours
+      fillin_tmp_g.clone({:quiet => false, :verbose => true, :progress => true, :branch => '24h'}, "#{repository.uri}", "#{clone_tmp}")
       g = Grit::Repo.new("#{clone_tmp}", {:is_bare => true})
     rescue Exception => e
       puts "*************************************************************************************"
-      puts "Failed to clone repository: #{r.uri}"
+      puts "Failed to clone repository: #{repository.uri}"
       puts "*************************************************************************************"
       puts "The following error may be difficult to diagnose. You probably just used the wrong uri."
       puts "Make sure it looks like: git://github.com/someuser/someproject.git or similar..."

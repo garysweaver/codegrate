@@ -48,11 +48,12 @@ class DashboardController < ApplicationController
     last_time_int = last_score.date.to_time.to_i
     x.set_range(last_time_int, first_time_int)
     diff_time = last_time_int - first_time_int
-    x.steps = 86400
+    #x.steps = 86400
+    x.steps = 1
 
     labels = XAxisLabels.new
     labels.text = "#date: l jS, M Y#"
-    #labels.steps = 86400
+    labels.steps = 86400
     labels.steps = diff_time / 10
     labels.visible_steps = 1
     labels.rotate = 90
@@ -61,13 +62,15 @@ class DashboardController < ApplicationController
 
     max_y = Score.maximum(:score) + 1
     y = YAxis.new
-    y.set_range(0,max_y,(max_y/3).to_i)
+    y.set_range(0,max_y * 3,(max_y/3).to_i)
 
     chart = OpenFlashChart.new
     title = Title.new("Code Scores")
     chart.title = title
     chart.x_axis = x
     chart.y_axis = y
+    
+    color_index = 0.01;
     
     author_id_to_data.sort.each do |author_id, data|
       
@@ -81,7 +84,8 @@ class DashboardController < ApplicationController
       #dot.tooltip = "#date:d M y#<br>Value: #val#"
       dot.tooltip = "#{author.name} &lt;#{author.email}&gt;<br>Value: #val#"
 
-      color = "%06x" % (rand * 0xffffff)
+      color = "%06x" % (color_index * 0xffffff)
+      color_index = color_index + 0.01
 
       line = ScatterLine.new("##{color}", 2)
       line.values = data
