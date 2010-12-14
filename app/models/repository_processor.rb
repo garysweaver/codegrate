@@ -129,6 +129,7 @@ protected
           # double lines removed for those beyond the number of line additions
           diff_score = diff_score + (r-a) if r > a
           commit_score = commit_score + diff_score
+          commit_score = 150 if commit_score > 150
           puts "LOC additions = #{a}"
           puts "LOC removals = #{r}"
           puts "LOC removals beyond additions = #{bonus}"

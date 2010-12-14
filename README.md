@@ -5,7 +5,17 @@ Codegrate is a Rails 3 web application to score, summarize, and graphically repo
 
 Codegrate provides a web-based UI to view a dashboard (with graph courtesy of [open flash chart][ofc]), a place to add/remove/edit repositories used by Codegrate, information about authors in the analyzed repositories, and a list of all known commits and their scores.
 
-When a repository is added, Codegrate analyzes the repository. This involves calling git clone from shell, because it is faster than [GRIT][grit]'s clone (I even tried the exec-direct branch), but if you want to use GRIT's clone, you can set the RCLONE env variable to anything (e.g. RCLONE=1 rails server). Then it calls the log method on GRIT's git repo and uses the following algorithm to determine a score for each commit: score = (number of LOC additions) + (number of LOC removals) + (number of LOC removals greater than number of LOC additions, if any). This is by no means a perfect scoring system, in fact it is quite horrid, but I wanted something that could be applied across all kinds of code. Basically, the theory is that if you are just adding code you are doing something (and you get a big score for reusing someone else's code), but refactoring is more complex (code changes that involve additions and subtractions), and reducing code should be rewarded (since potentially it implies less complexity and less required maintenance). There are many ways this scoring system could be easily abused, but it at least tries to measure productivity at some level.
+When a repository is added/edited or on startup, a request is added to analyze the repository.
+
+Also every 30 minutes all repositories are requested to be analyzed.
+
+Every 5 seconds those repositories in queue are analyzed in sequence.
+
+Repository analyzation first involves calling git clone from shell, because it is faster than [GRIT][grit]'s clone (I even tried the exec-direct branch), but if you want to use GRIT's clone, you can set the RCLONE env variable to anything (e.g. RCLONE=1 rails server).
+
+The next step in analyzation is calling the log method on GRIT's git repo and using the following algorithm to determine a score for each commit: score = (number of LOC additions) + (number of LOC removals) + (number of LOC removals greater than number of LOC additions, if any). If the score is truncated at 150 to avoid issues with binary files causing extremely high scores.
+
+This is by no means a perfect scoring system. In fact, it is quite horrid. But, I wanted something that could be applied across all kinds of code to attempt to measure productivity at some level. Basically, the theory is that if you are just adding code you are doing something (and you get a big score for reusing someone else's code), but refactoring is more complex (code changes that involve additions and subtractions), and reducing code should be rewarded (since potentially it implies less complexity and less required maintenance). There are many ways this scoring system could be easily abused.
 
 In addition to using open flash chart and GRIT, it uses the [rufus scheduler][rsc] to keep information up-to-date.
 
