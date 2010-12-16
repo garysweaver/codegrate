@@ -5,15 +5,32 @@ Codegrate is a Rails 3 web application to score, summarize, and graphically repo
 
 Codegrate provides a web-based UI to view a dashboard (with graph courtesy of [open flash chart][ofc]), a place to add/remove/edit repositories used by Codegrate, information about authors in the analyzed repositories, and a list of all known commits and their scores.
 
+How It Works
+=====
+
 When a repository is added/edited or on startup, a request is added to analyze the repository.
 
 Using [rufus scheduler][rsc], every 5 seconds, repositories in queue are analyzed in sequence. On startup and every 30 minutes, all repositories are requested to be analyzed.
 
-Repository analyzation first involves calling git clone from shell, because it is faster than [GRIT][grit]'s clone (I even tried the exec-direct branch), but if you want to use GRIT's clone, you can set the RCLONE env variable to anything (e.g. RCLONE=1 rails server).
+Repository analyzation first involves calling git clone from shell. This is faster than [GRIT][grit]'s clone, even with the latest changes in the exec-direct branch. If you want to use GRIT's clone, you can set the RCLONE env variable to anything (e.g. RCLONE=1 rails server).
 
 The next step in analyzation is calling the log method on GRIT's git repo and using the following algorithm to determine a score for each commit: score = (number of LOC additions) + (number of LOC removals) + (number of LOC removals greater than number of LOC additions, if any). The score is limited to 150 per commit to attempt to avoid issues with high scores due to addition and removal of image files, etc.
 
-The analyzation and scoring system need work, but the intent is to provide something that could be applied across all kinds of code to attempt to measure productivity at some base level. The theory is that if you are just adding code you are doing something (and you get a big score for reusing someone else's code), but refactoring is more complex (code changes that involve additions and subtractions), and reducing code should be rewarded (since potentially it implies less complexity and less required maintenance). There are many ways this scoring system could be easily abused.
+To Do
+=====
+
+Add any of these as issues in the tracker or anything else you can think of. I won't necessarily get to it, though.
+
+More important items first:
+
+* Currently the request is using a fairly inefficient method of calculating the score for each day. The plan is for it to do this during the analysis and store in summary tables. This makes it almost unusable for most repositories, unless you have a very fast server.
+* It deletes data and reanalyzes too much. Shouldn't clone unless needed (should just pull).
+* Obviously more control over the reporting (specify date range, compare weeks, months, etc. and not just days), more reports (by repo, by branch).
+* Should add authentication (require login) and authorization (roles), especially if using repos that require authN to access.
+* Should possibly not just clone/analyze master branch. Could get list of all remote branches and score all.
+* Should make reports printable.
+* Should provide reports as PDF. This may require using something other than open flash chart, even though it could export images, so it could work.
+* Could make it store diffs and allow users to review code, at the very least just storing the username of the person who looked at the diff. Also, could have a way to auto-notify team if changes are made that require review (yes, that would be better as a SCM hook, but...). And you'd need a way to mark code as reviewed in mass without defining who reviewed.
 
 Installation
 =====
