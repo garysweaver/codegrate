@@ -1,6 +1,8 @@
 Codegrate
 =====
 
+**NOTE: This application is currently broken after the Rails 3.1 upgrade. Hoping to fix soon.**
+
 Codegrate is a Rails 3 web application to score, summarize, and graphically report commit data across version control/SCM repositories. Currently only Git repositories are supported, but if you'd like to add others, please fork it and send a pull request.
 
 Codegrate provides a web-based UI to view a dashboard (with graph courtesy of [open flash chart][ofc]), a place to add/remove/edit repositories used by Codegrate, information about authors in the analyzed repositories, and a list of all known commits and their scores.
