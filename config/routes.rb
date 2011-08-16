@@ -1,4 +1,5 @@
 Codegrate::Application.routes.draw do
+  
   resources :repositories
 
   root :to => "dashboard#index"
@@ -6,7 +7,7 @@ Codegrate::Application.routes.draw do
   match "data" => "dashboard#show"
   match "authors" => "authors#index"
   match "scores" => "scores#index"
-
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -56,7 +57,7 @@ Codegrate::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => "welcome#index"
+  # root :to => 'welcome#index'
 
   # See how all your routes lay out with "rake routes"
 

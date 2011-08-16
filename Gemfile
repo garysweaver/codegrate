@@ -1,26 +1,23 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.1'
+gem 'rails', '3.1.0.rc5'
 
 # Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+# gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
-#gem 'grit', '2.3.0'
-gem "grit", :git => 'git://github.com/mojombo/grit.git', :branch => 'exec-direct'
+gem 'sqlite3'
 
+gem 'json'
 
-gem 'sqlite3-ruby', :require => 'sqlite3'
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails', "~> 3.1.0.rc"
+  gem 'coffee-rails', "~> 3.1.0.rc"
+  gem 'uglifier'
+end
 
-# rails plugin install git://github.com/galetahub/open_flash_chart.git
-# mkdir public/swf
-# find vendor/plugins/open_flash_chart -name "*.js" -exec cp {} public/javascripts/ \;
-# find vendor/plugins/open_flash_chart -name "*.swf" -exec cp {} public/swf \;
-
-gem 'git', '1.2.5'
-#gem 'daemon_controller', '0.2.5'
-#gem 'whenever', '0.6.2'
-#gem 'whenever', :require => false
-gem 'rufus-scheduler', '2.0.7'
+gem 'jquery-rails'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -31,15 +28,7 @@ gem 'rufus-scheduler', '2.0.7'
 # To use debugger
 # gem 'ruby-debug'
 
-# Bundle the extra gems:
-# gem 'bj'
-# gem 'nokogiri'
-# gem 'sqlite3-ruby', :require => 'sqlite3'
-# gem 'aws-s3', :require => 'aws/s3'
+gem 'grit', '2.4.1'
+gem 'git', '1.2.5'
+gem 'rufus-scheduler', '2.0.7'
 
-# Bundle gems for the local environment. Make sure to
-# put test-only gems in this group so their generators
-# and rake tasks are available in development mode:
-# group :development, :test do
-#   gem 'webrat'
-# end

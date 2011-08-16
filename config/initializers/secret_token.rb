@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Codegrate::Application.config.secret_token = 'ae5cc517226731665f9cb7c80f4afd3373423361e115b563eb561bd52307bfe9186df57dc5b4c80ec8f4a009e65895d99c26691f82e9595f044c7d61d973b52c'
+Codegrate::Application.config.secret_token = 'baeaf0b90e8443234b5ddc443079e1b3b6c9b0f1c15a59a4efdc9c991d3d590fbf7404b7ad2d9f9498eb55c89f982545c9590feecd3bc8cfcb6e4e9d134d6e0c'
