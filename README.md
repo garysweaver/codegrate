@@ -62,7 +62,7 @@ Please fork this project and contribute back as much as you want via pull reques
 
 ### License
 
-Copyright (c) 2010 Gary S. Weaver, released under the [MIT license][lic].
+Copyright (c) 2010-2011 Gary S. Weaver, released under the [MIT license][lic].
 
 [lic]: http://github.com/garysweaver/codegrate/blob/master/LICENSE
 [ofc]: https://github.com/galetahub/open_flash_chart
